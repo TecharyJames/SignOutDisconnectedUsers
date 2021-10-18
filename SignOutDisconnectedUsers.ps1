@@ -29,29 +29,38 @@ function Get-LoggedInuser {
 # Saves disconnected users to an array list
 [System.Collections.ArrayList]$DisconnectedUsersArray = (Get-LoggedInuser | where {$_.state -eq "disc"})
 
-# Gets the DC then querys for all group members, saves them as an array list
+# Gets the DC then querys each group for all members, adds them to an array list
 $dc = (Get-ADDomainController).name
-$group1Name = ""
-[System.Collections.ArrayList]$administratorsArray = (get-adgroupmember -server $dc -Identity $groupName).name
+$ExcludedGroups = @("<group1>", "<group2>")
 
-# Loops through disconnected users, if they exist in the administrators group does NOT add them to the new disconnected users array // tried remove from current array but it didn't work very well
-[System.Collections.ArrayList]$disconnectedUsers = @()
+[System.Collections.ArrayList]$ExcludedUsers = @()
+foreach ($group in $ExcludedGroups)
+    {
+
+        $ExcludedUsers = $ExcludedUsers += (get-adgroupmember -server $dc -Identity $group).name
+
+    }
+
+# Loops through disconnected users, if they exist in the excluded users group does NOT add them to the new disconnected users array
+[System.Collections.ArrayList]$UsersToDisconnect = @()
 foreach ($user in $disconnectedusersarray)
     {
 
-        if($administratorsarray -notcontains $user.username)
+        if($ExcludedUsers -notcontains $user.username)
             {
 
-                $disconnectedUsers = $DisconnectedUsers += $user
+                $UsersToDisconnect = $UsersToDisconnect += $user
 
             }
     }
 
 
 # Loops through each unified sesssion ID and disconnects it
-foreach ($Session in $DisconnectedUsers.ID)
+foreach ($Session in $DisconnectedUsers)
+
     {
 
-        invoke-rduserlogoff -UnifiedSessionID $Session
+        invoke-rduserlogoff -UnifiedSessionID $Session.ID
 
     }
+
