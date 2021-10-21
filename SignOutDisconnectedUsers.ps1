@@ -2,7 +2,7 @@
 ## Author: James Tarran // Techary ##
 #####################################
 
-# Custom function to convert the cmd "quser" to a powershell manipulatable object
+# Custom function to convert the cmd "quser" to a powershell manipulatable object // https://community.spiceworks.com/scripts/show/4408-get-logged-in-users-remote-computers-or-local
 function Get-LoggedInuser {
 
     $stringOutput = quser /server:$Comp 2>$null
