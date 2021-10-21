@@ -37,7 +37,7 @@ $ExcludedGroups = @("<group1>", "<group2>")
 foreach ($group in $ExcludedGroups)
     {
 
-        $ExcludedUsers = $ExcludedUsers += (get-adgroupmember -server $dc -Identity $group).name
+        $ExcludedUsers = $ExcludedUsers += (get-adgroupmember -server $dc -Identity $group).SAMAccountName
 
     }
 
@@ -56,7 +56,7 @@ foreach ($user in $disconnectedusersarray)
 
 
 # Loops through each unified sesssion ID and disconnects it
-foreach ($Session in $DisconnectedUsers)
+foreach ($Session in $UsersToDisconnect)
 
     {
 
