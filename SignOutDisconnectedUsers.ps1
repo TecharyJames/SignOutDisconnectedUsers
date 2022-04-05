@@ -29,7 +29,7 @@ function Get-LoggedInuser {
 # Saves disconnected users to an array list
 [System.Collections.ArrayList]$DisconnectedUsersArray = (Get-LoggedInuser | where {$_.state -eq "disc"})
 
-# Gets the DC then querys each group for all members, adds them to an array list
+# Gets the DC then querys each group for all members, adds them to an arrays
 $dc = (Get-ADDomainController).name
 $ExcludedGroups = @("<group1>", "<group2>")
 
